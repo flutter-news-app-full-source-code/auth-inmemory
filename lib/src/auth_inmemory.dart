@@ -1,21 +1,23 @@
+// ignore_for_file: lines_longer_than_80_chars
+
 import 'dart:async';
 
-import 'package:ht_auth_client/ht_auth_client.dart';
-import 'package:ht_shared/ht_shared.dart';
+import 'package:auth_client/auth_client.dart';
+import 'package:core/core.dart';
 import 'package:logging/logging.dart';
 import 'package:uuid/uuid.dart';
 
-/// {@template ht_auth_inmemory}
-/// An in-memory implementation of the [HtAuthClient] interface for
+/// {@template auth_inmemory}
+/// An in-memory implementation of the [AuthClient] interface for
 /// demonstration and testing purposes.
 ///
 /// This client simulates authentication flows without requiring a backend,
 /// managing user and token states purely in memory.
 /// {@endtemplate}
-class HtAuthInmemory implements HtAuthClient {
-  /// {@macro ht_auth_inmemory}
-  HtAuthInmemory({this.initialUser, this.initialToken, Logger? logger})
-    : _logger = logger ?? Logger('HtAuthInmemory') {
+class AuthInmemory implements AuthClient {
+  /// {@macro auth_inmemory}
+  AuthInmemory({this.initialUser, this.initialToken, Logger? logger})
+    : _logger = logger ?? Logger('AuthInmemory') {
     _logger.fine(
       'Initializing with initialUser: $initialUser, '
       'initialToken: $initialToken',
@@ -156,10 +158,11 @@ class HtAuthInmemory implements HtAuthClient {
     _authStateController.add(_currentUser);
     _pendingCodes.remove(email);
 
-    _logger.info(
-      'User $email verified. New user: $_currentUser, token: $_currentToken',
-    );
-    _logger.finer('Pending codes after verification: $_pendingCodes');
+    _logger
+      ..info(
+        'User $email verified. New user: $_currentUser, token: $_currentToken',
+      )
+      ..finer('Pending codes after verification: $_pendingCodes');
     await Future<void>.delayed(const Duration(milliseconds: 500));
     _logger.fine('verifySignInCode completed for email: $email');
     return AuthSuccessResponse(user: user, token: _currentToken!);
@@ -201,10 +204,11 @@ class HtAuthInmemory implements HtAuthClient {
     _authStateController.add(null);
     _pendingCodes.clear();
 
-    _logger.info(
-      'User signed out. Current user: $_currentUser, token: $_currentToken',
-    );
-    _logger.finer('Pending codes after sign out: $_pendingCodes');
+    _logger
+      ..info(
+        'User signed out. Current user: $_currentUser, token: $_currentToken',
+      )
+      ..finer('Pending codes after sign out: $_pendingCodes');
     await Future<void>.delayed(const Duration(milliseconds: 500));
     _logger.fine('signOut completed.');
   }

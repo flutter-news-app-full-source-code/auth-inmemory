@@ -1,10 +1,10 @@
-# ht_auth_inmemory
+# auth_inmemory
 
 ![coverage: percentage](https://img.shields.io/badge/coverage-XX-green)
 [![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis)
 [![License: PolyForm Free Trial](https://img.shields.io/badge/License-PolyForm%20Free%20Trial-blue)](https://polyformproject.org/licenses/free-trial/1.0.0)
 
-An in-memory implementation of the `HtAuthClient` interface. This package provides a mock authentication client that operates entirely on in-memory data, making it suitable for demonstration purposes, local development, and testing without requiring a live backend.
+An in-memory implementation of the `AuthClient` interface. This package provides a mock authentication client that operates entirely on in-memory data, making it suitable for demonstration purposes, local development, and testing without requiring a live backend.
 
 ### Getting Started
 
@@ -12,14 +12,14 @@ Add the following to your `pubspec.yaml` dependencies:
 
 ```yaml
 dependencies:
-  ht_auth_inmemory:
+  auth_inmemory:
     git:
-      url: https://github.com/headlines-toolkit/ht-auth-inmemory
+      url: https://github.com/flutter-news-app-full-source-code/auth-inmemory
 ```
 
 ### Features
 
-This package implements the `HtAuthClient` interface, providing the following in-memory simulated authentication methods:
+This package implements the `AuthClient` interface, providing the following in-memory simulated authentication methods:
 
 *   `authStateChanges`: A stream that emits the current authenticated `User` or `null` on state changes.
 *   `getCurrentUser`: Retrieves the currently authenticated `User`.
@@ -31,14 +31,14 @@ This package implements the `HtAuthClient` interface, providing the following in
 
 ### Usage
 
-Here's how you can use `HtAuthInmemory` in your application for demo or testing environments:
+Here's how you can use `AuthInmemory` in your application for demo or testing environments:
 
 ```dart
-import 'package:ht_auth_inmemory/ht_auth_inmemory.dart';
-import 'package:ht_shared/ht_shared.dart'; // For User and AuthSuccessResponse
+import 'package:auth_inmemory/auth_inmemory.dart';
+import 'package:core/core.dart'; // For User and AuthSuccessResponse
 
 void main() async {
-  final authClient = HtAuthInmemory();
+  final authClient = AuthInmemory();
 
   // Listen to authentication state changes
   authClient.authStateChanges.listen((user) {
@@ -93,6 +93,10 @@ void main() async {
 }
 ```
 
-### License
 
-This package is licensed under the [PolyForm Free Trial](LICENSE). Please review the terms before use.
+
+## 🔑 Licensing
+
+This package is source-available and licensed under the [PolyForm Free Trial 1.0.0](LICENSE). Please review the terms before use.
+
+For commercial licensing options that grant the right to build and distribute unlimited applications, please visit the main [**Flutter News App - Full Source Code Toolkit**](https://github.com/flutter-news-app-full-source-code) organization.
