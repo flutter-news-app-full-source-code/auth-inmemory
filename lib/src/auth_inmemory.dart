@@ -24,11 +24,16 @@ class AuthInmemory implements AuthClient {
     );
     _currentUser = initialUser;
     _currentToken = initialToken;
-    if (_currentUser != null) {
-      _authStateController.add(_currentUser);
-      _logger.finer('Added initial user to authStateController.');
-    }
-    _logger.fine('Initialization complete.');
+    // To mimic a "hot" stream like a real auth client, we immediately
+    // emit the initial state. We use a Future to schedule this for the next
+    // event-loop microtask, ensuring that subscribers (like AppBloc) have
+    // time to listen before the first event is sent.
+    Future(() => _authStateController.add(_currentUser));
+    _logger
+      ..finer(
+        'Scheduled initial user ($_currentUser) to be added to authStateController.',
+      )
+      ..fine('AuthInmemory initialization complete.');
   }
   final Logger _logger;
   final Uuid _uuid = const Uuid();
