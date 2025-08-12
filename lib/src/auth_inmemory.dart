@@ -151,12 +151,15 @@ class AuthInmemory implements AuthClient {
           ? DashboardUserRole.admin
           : DashboardUserRole.none,
       createdAt: DateTime.now(),
-      feedActionStatus: Map.fromEntries(
-        FeedActionType.values.map(
-          (type) =>
-              MapEntry(type, const UserFeedActionStatus(isCompleted: false)),
-        ),
-      ),
+      feedDecoratorStatus:
+          Map<FeedDecoratorType, UserFeedDecoratorStatus>.fromEntries(
+            FeedDecoratorType.values.map(
+              (type) => MapEntry(
+                type,
+                const UserFeedDecoratorStatus(isCompleted: false),
+              ),
+            ),
+          ),
     );
     _currentUser = user;
     _currentToken = _uuid.v4();
@@ -182,12 +185,15 @@ class AuthInmemory implements AuthClient {
       appRole: AppUserRole.guestUser,
       dashboardRole: DashboardUserRole.none,
       createdAt: DateTime.now(),
-      feedActionStatus: Map.fromEntries(
-        FeedActionType.values.map(
-          (type) =>
-              MapEntry(type, const UserFeedActionStatus(isCompleted: false)),
-        ),
-      ),
+      feedDecoratorStatus:
+          Map<FeedDecoratorType, UserFeedDecoratorStatus>.fromEntries(
+            FeedDecoratorType.values.map(
+              (type) => MapEntry(
+                type,
+                const UserFeedDecoratorStatus(isCompleted: false),
+              ),
+            ),
+          ),
     );
     _currentUser = user;
     _currentToken = _uuid.v4();
