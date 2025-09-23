@@ -1,102 +1,40 @@
-# auth_inmemory
+<div align="center">
+  <img src="https://avatars.githubusercontent.com/u/202675624?s=400&u=dc72a2b53e8158956a3b672f8e52e39394b6b610&v=4" alt="Flutter News App Toolkit Logo" width="220">
+  <h1>Auth In-Memory</h1>
+  <p><strong>An in-memory implementation of the `AuthClient` interface for the Flutter News App Toolkit.</strong></p>
+</div>
 
-![coverage: percentage](https://img.shields.io/badge/coverage-XX-green)
-[![style: very good analysis](https://img.shields.io/badge/style-very_good_analysis-B22C89.svg)](https://pub.dev/packages/very_good_analysis)
-[![License: PolyForm Free Trial](https://img.shields.io/badge/License-PolyForm%20Free%20Trial-blue)](https://polyformproject.org/licenses/free-trial/1.0.0)
+<p align="center">
+  <img src="https://img.shields.io/badge/coverage-13%25-red?style=for-the-badge" alt="coverage">
+  <a href="https://flutter-news-app-full-source-code.github.io/docs/"><img src="https://img.shields.io/badge/LIVE_DOCS-VIEW-slategray?style=for-the-badge" alt="Live Docs: View"></a>
+  <a href="https://github.com/flutter-news-app-full-source-code"><img src="https://img.shields.io/badge/MAIN_PROJECT-BROWSE-purple?style=for-the-badge" alt="Main Project: Browse"></a>
+</p>
 
-An in-memory implementation of the `AuthClient` interface. This package provides a mock authentication client that operates entirely on in-memory data, making it suitable for demonstration purposes, local development, and testing without requiring a live backend.
+This `auth_inmemory` package provides an in-memory implementation of the `AuthClient` interface within the [**Flutter News App Full Source Code Toolkit**](https://github.com/flutter-news-app-full-source-code). It offers a mock authentication client that operates entirely on in-memory data, making it suitable for demonstration purposes, local development, and testing without requiring a live backend. This package simulates various authentication flows, ensuring consistent behavior and robust error handling based on the `auth_client` contract.
 
-### Getting Started
+## ⭐ Feature Showcase: Simplified Authentication Testing & Development
 
-Add the following to your `pubspec.yaml` dependencies:
+This package offers a comprehensive set of features for managing authentication operations in a simulated environment.
 
-```yaml
-dependencies:
-  auth_inmemory:
-    git:
-      url: https://github.com/flutter-news-app-full-source-code/auth-inmemory
-```
+<details>
+<summary><strong>🧱 Core Functionality</strong></summary>
 
-### Features
+### 🚀 `AuthClient` Implementation
+- **`AuthInmemory` Class:** A concrete in-memory implementation of the `AuthClient` interface, providing a standardized way to simulate authentication.
+- **Simulated Authentication Flows:** Implements `requestSignInCode`, `verifySignInCode`, `signInAnonymously`, and `signOut` to simulate various authentication processes.
+- **Reactive State Changes:** Provides `authStateChanges` (a stream that emits the current authenticated `User` or `null` on state changes) and `getCurrentUser` to retrieve the current user.
 
-This package implements the `AuthClient` interface, providing the following in-memory simulated authentication methods:
+### 🌐 Debugging & Validation
+- **Privileged Flow Simulation:** Supports an `isDashboardLogin` flag in `requestSignInCode` and `verifySignInCode` to simulate privileged flows, allowing testing of admin-specific authentication logic (e.g., only `admin@example.com` is allowed).
+- **Token Retrieval:** Includes a `currentToken` getter to retrieve the simulated authentication token for inspection during development.
 
-*   `authStateChanges`: A stream that emits the current authenticated `User` or `null` on state changes.
-*   `getCurrentUser`: Retrieves the currently authenticated `User`.
-*   `requestSignInCode`: Simulates sending a sign-in code to an email. This method supports an optional `isDashboardLogin` flag. When `true`, it simulates a privileged flow where only `admin@example.com` is allowed to request a code; otherwise, it throws an `UnauthorizedException`.
-*   `verifySignInCode`: Simulates verifying a sign-in code and authenticating a user. This method also supports an optional `isDashboardLogin` flag. When `true`, it simulates a privileged flow where only `admin@example.com` can successfully verify a code (throwing a `NotFoundException` for other emails) and the authenticated user is assigned the `UserRoles.admin` role.
-*   `signInAnonymously`: Simulates signing in a user anonymously.
-*   `signOut`: Simulates signing out the current user.
-*   `currentToken`: A custom getter to retrieve the simulated authentication token.
+### 🛡️ Standardized Error Handling
+- **`HttpException` Propagation:** Throws standard `HttpException` subtypes (e.g., `UnauthorizedException`, `NotFoundException`, `AuthenticationException`, `InvalidInputException`) from `core` on simulated failures, ensuring consistent error handling in a testing context.
 
-### Usage
+> **💡 Your Advantage:** This package provides a reliable, in-memory authentication client that simplifies testing and development of authentication-related features. It eliminates the need for external backend dependencies during development, offering immediate feedback and consistent behavior for your authentication logic, especially for complex scenarios like privileged logins.
 
-Here's how you can use `AuthInmemory` in your application for demo or testing environments:
-
-```dart
-import 'package:auth_inmemory/auth_inmemory.dart';
-import 'package:core/core.dart'; // For User and AuthSuccessResponse
-
-void main() async {
-  final authClient = AuthInmemory();
-
-  // Listen to authentication state changes
-  authClient.authStateChanges.listen((user) {
-    if (user != null) {
-      print('User authenticated: ${user.email ?? 'Anonymous'}');
-    } else {
-      print('User signed out.');
-    }
-  });
-
-  // Simulate anonymous sign-in
-  try {
-    final anonymousAuthResponse = await authClient.signInAnonymously();
-    print('Signed in anonymously. User ID: ${anonymousAuthResponse.user.id}');
-    print('Current Token: ${authClient.currentToken}');
-  } catch (e) {
-    print('Anonymous sign-in failed: $e');
-  }
-
-  // Simulate email sign-in flow
-  const testEmail = 'test@example.com';
-  try {
-    await authClient.requestSignInCode(testEmail);
-    print('Sign-in code requested for $testEmail');
-
-    // In a real app, the user would input the code received via email
-    const code = '123456'; // Hardcoded code for in-memory demo
-
-    final verifiedAuthResponse =
-        await authClient.verifySignInCode(testEmail, code);
-    print('Verified sign-in for ${verifiedAuthResponse.user.email}');
-    print('Current Token: ${authClient.currentToken}');
-  } on InvalidInputException catch (e) {
-    print('Invalid input: ${e.message}');
-  } on AuthenticationException catch (e) {
-    print('Authentication failed: ${e.message}');
-  } catch (e) {
-    print('Sign-in failed: $e');
-  }
-
-  // Get current user
-  final currentUser = await authClient.getCurrentUser();
-  print('Current user (after operations): ${currentUser?.email}');
-
-  // Simulate sign-out
-  try {
-    await authClient.signOut();
-    print('User signed out successfully.');
-  } catch (e) {
-    print('Sign-out failed: $e');
-  }
-}
-```
-
-
+</details>
 
 ## 🔑 Licensing
 
-This package is source-available and licensed under the [PolyForm Free Trial 1.0.0](LICENSE). Please review the terms before use.
-
-For commercial licensing options that grant the right to build and distribute unlimited applications, please visit the main [**Flutter News App - Full Source Code Toolkit**](https://github.com/flutter-news-app-full-source-code) organization.
+This `auth_inmemory` package is an integral part of the [**Flutter News App Full Source Code Toolkit**](https://github.com/flutter-news-app-full-source-code). For comprehensive details regarding licensing, including trial and commercial options for the entire toolkit, please refer to the main toolkit organization page.
