@@ -37,11 +37,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v1.0.0"
-      resolved-ref: a90e24285874e4c39cb331bbbeae2423901f3289
+      ref: "v1.0.1"
+      resolved-ref: "605212aa4bf2a106691f447b824c66bb5218205c"
       url: "https://github.com/flutter-news-app-full-source-code/auth-client.git"
     source: git
-    version: "0.0.0"
+    version: "1.0.1"
   boolean_selector:
     dependency: transitive
     description:
@@ -78,11 +78,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "v1.2.0"
-      resolved-ref: d052799c1ebb7bcdd1a725a2a7919948c14fa001
+      ref: "v1.3.1"
+      resolved-ref: a03efff11b7577974cb444a1a6a46fee8b05ea42
       url: "https://github.com/flutter-news-app-full-source-code/core.git"
     source: git
-    version: "1.2.0"
+    version: "1.3.1"
   coverage:
     dependency: transitive
     description:
