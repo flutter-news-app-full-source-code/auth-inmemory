@@ -54,7 +54,7 @@ class AuthInmemory implements AuthClient {
   final String? initialToken;
 
   /// The list of privileged emails that are allowed to access the dashboard.
-  final List<String> _privilegedEmails;
+  final Set<String> _privilegedEmails;
 
   final StreamController<User?> _authStateController =
       StreamController<User?>.broadcast();
