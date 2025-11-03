@@ -1,3 +1,7 @@
+## 1.1.0 - 2025-11-03
+
+- **feat**: allow providing a custom list of privileged emails.
+
 ## 1.0.1 - 2025-10-24
 
 - **chore**: update dependencies

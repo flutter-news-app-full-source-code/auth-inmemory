@@ -25,7 +25,8 @@ This package offers a comprehensive set of features for managing authentication 
 - **Reactive State Changes:** Provides `authStateChanges` (a stream that emits the current authenticated `User` or `null` on state changes) and `getCurrentUser` to retrieve the current user.
 
 ### 🌐 Debugging & Validation
-- **Privileged Flow Simulation:** Supports an `isDashboardLogin` flag in `requestSignInCode` and `verifySignInCode` to simulate privileged flows, allowing testing of admin-specific authentication logic (e.g., only `admin@example.com` is allowed).
+- **Privileged Flow Simulation:** Supports an `isDashboardLogin` flag in `requestSignInCode` and `verifySignInCode` to simulate privileged flows, allowing testing of role-specific authentication logic (e.g., only privileged users like `admin@example.com` and `publisher@example.com` are allowed).
+
 - **Token Retrieval:** Includes a `currentToken` getter to retrieve the simulated authentication token for inspection during development.
 
 ### 🛡️ Standardized Error Handling

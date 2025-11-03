@@ -16,11 +16,19 @@ import 'package:uuid/uuid.dart';
 /// {@endtemplate}
 class AuthInmemory implements AuthClient {
   /// {@macro auth_inmemory}
-  AuthInmemory({this.initialUser, this.initialToken, Logger? logger})
-    : _logger = logger ?? Logger('AuthInmemory') {
+  AuthInmemory({
+    this.initialUser,
+    this.initialToken,
+    Logger? logger,
+    Set<String>? privilegedEmails,
+  }) : _logger = logger ?? Logger('AuthInmemory'),
+       _privilegedEmails =
+           privilegedEmails ??
+           const {'admin@example.com', 'publisher@example.com'} {
     _logger.fine(
       'Initializing with initialUser: $initialUser, '
-      'initialToken: $initialToken',
+      'initialToken: $initialToken, '
+      'privilegedEmails: $_privilegedEmails',
     );
     _currentUser = initialUser;
     _currentToken = initialToken;
@@ -43,6 +51,9 @@ class AuthInmemory implements AuthClient {
 
   /// The initial token to set for demonstration purposes.
   final String? initialToken;
+
+  /// The list of privileged emails that are allowed to access the dashboard.
+  final Set<String> _privilegedEmails;
 
   final StreamController<User?> _authStateController =
       StreamController<User?>.broadcast();
@@ -90,13 +101,13 @@ class AuthInmemory implements AuthClient {
       throw const InvalidInputException('Invalid email format.');
     }
 
-    if (isDashboardLogin && email != 'admin@example.com') {
+    if (isDashboardLogin && !_privilegedEmails.contains(email)) {
       _logger.warning(
-        'Dashboard login requested for non-admin email $email. '
+        'Dashboard login requested for non-privileged email $email. '
         'Throwing UnauthorizedException.',
       );
       throw const UnauthorizedException(
-        'Only admin@example.com can access the dashboard.',
+        'This email does not have dashboard access.',
       );
     }
 
@@ -125,9 +136,9 @@ class AuthInmemory implements AuthClient {
       throw const InvalidInputException('Invalid email format.');
     }
 
-    if (isDashboardLogin && email != 'admin@example.com') {
+    if (isDashboardLogin && !_privilegedEmails.contains(email)) {
       _logger.warning(
-        'Dashboard login verification for non-admin email $email. '
+        'Dashboard login verification for non-privileged email $email. '
         'Throwing NotFoundException.',
       );
       throw const NotFoundException('User not found for dashboard access.');
@@ -148,7 +159,9 @@ class AuthInmemory implements AuthClient {
           ? AppUserRole.premiumUser
           : AppUserRole.standardUser,
       dashboardRole: isDashboardLogin
-          ? DashboardUserRole.admin
+          ? (email == 'admin@example.com'
+                ? DashboardUserRole.admin
+                : DashboardUserRole.publisher)
           : DashboardUserRole.none,
       createdAt: DateTime.now(),
       feedDecoratorStatus:
