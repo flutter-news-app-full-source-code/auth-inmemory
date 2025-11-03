@@ -14,18 +14,17 @@ import 'package:uuid/uuid.dart';
 /// This client simulates authentication flows without requiring a backend,
 /// managing user and token states purely in memory.
 /// {@endtemplate}
-
-/// {@nodoc}
 class AuthInmemory implements AuthClient {
   /// {@macro auth_inmemory}
   AuthInmemory({
     this.initialUser,
     this.initialToken,
     Logger? logger,
-    List<String>? privilegedEmails,
-  })  : _logger = logger ?? Logger('AuthInmemory'),
-        _privilegedEmails = privilegedEmails ??
-            const ['admin@example.com', 'publisher@example.com'] {
+    Set<String>? privilegedEmails,
+  }) : _logger = logger ?? Logger('AuthInmemory'),
+       _privilegedEmails =
+           privilegedEmails ??
+           const {'admin@example.com', 'publisher@example.com'} {
     _logger.fine(
       'Initializing with initialUser: $initialUser, '
       'initialToken: $initialToken, '
@@ -159,11 +158,11 @@ class AuthInmemory implements AuthClient {
       appRole: isDashboardLogin
           ? AppUserRole.premiumUser
           : AppUserRole.standardUser,
-      dashboardRole: switch (email) {
-        'admin@example.com' when isDashboardLogin => DashboardUserRole.admin,
-        'publisher@example.com' when isDashboardLogin => DashboardUserRole.publisher,
-        _ => DashboardUserRole.none,
-      },
+      dashboardRole: isDashboardLogin
+          ? (email == 'admin@example.com'
+                ? DashboardUserRole.admin
+                : DashboardUserRole.publisher)
+          : DashboardUserRole.none,
       createdAt: DateTime.now(),
       feedDecoratorStatus:
           Map<FeedDecoratorType, UserFeedDecoratorStatus>.fromEntries(
