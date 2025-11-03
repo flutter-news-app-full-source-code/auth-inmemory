@@ -14,6 +14,11 @@ import 'package:uuid/uuid.dart';
 /// This client simulates authentication flows without requiring a backend,
 /// managing user and token states purely in memory.
 /// {@endtemplate}
+
+/// A list of privileged emails that are allowed to access the dashboard.
+const _privilegedEmails = ['admin@example.com', 'publisher@example.com'];
+
+/// {@nodoc}
 class AuthInmemory implements AuthClient {
   /// {@macro auth_inmemory}
   AuthInmemory({this.initialUser, this.initialToken, Logger? logger})
@@ -90,13 +95,13 @@ class AuthInmemory implements AuthClient {
       throw const InvalidInputException('Invalid email format.');
     }
 
-    if (isDashboardLogin && email != 'admin@example.com') {
+    if (isDashboardLogin && !_privilegedEmails.contains(email)) {
       _logger.warning(
-        'Dashboard login requested for non-admin email $email. '
+        'Dashboard login requested for non-privileged email $email. '
         'Throwing UnauthorizedException.',
       );
       throw const UnauthorizedException(
-        'Only admin@example.com can access the dashboard.',
+        'This email does not have dashboard access.',
       );
     }
 
@@ -125,9 +130,9 @@ class AuthInmemory implements AuthClient {
       throw const InvalidInputException('Invalid email format.');
     }
 
-    if (isDashboardLogin && email != 'admin@example.com') {
+    if (isDashboardLogin && !_privilegedEmails.contains(email)) {
       _logger.warning(
-        'Dashboard login verification for non-admin email $email. '
+        'Dashboard login verification for non-privileged email $email. '
         'Throwing NotFoundException.',
       );
       throw const NotFoundException('User not found for dashboard access.');
@@ -147,9 +152,11 @@ class AuthInmemory implements AuthClient {
       appRole: isDashboardLogin
           ? AppUserRole.premiumUser
           : AppUserRole.standardUser,
-      dashboardRole: isDashboardLogin
-          ? DashboardUserRole.admin
-          : DashboardUserRole.none,
+      dashboardRole: switch (email) {
+        'admin@example.com' when isDashboardLogin => DashboardUserRole.admin,
+        'publisher@example.com' when isDashboardLogin => DashboardUserRole.publisher,
+        _ => DashboardUserRole.none,
+      },
       createdAt: DateTime.now(),
       feedDecoratorStatus:
           Map<FeedDecoratorType, UserFeedDecoratorStatus>.fromEntries(
