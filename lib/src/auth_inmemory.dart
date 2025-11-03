@@ -15,17 +15,21 @@ import 'package:uuid/uuid.dart';
 /// managing user and token states purely in memory.
 /// {@endtemplate}
 
-/// A list of privileged emails that are allowed to access the dashboard.
-const _privilegedEmails = ['admin@example.com', 'publisher@example.com'];
-
 /// {@nodoc}
 class AuthInmemory implements AuthClient {
   /// {@macro auth_inmemory}
-  AuthInmemory({this.initialUser, this.initialToken, Logger? logger})
-    : _logger = logger ?? Logger('AuthInmemory') {
+  AuthInmemory({
+    this.initialUser,
+    this.initialToken,
+    Logger? logger,
+    List<String>? privilegedEmails,
+  })  : _logger = logger ?? Logger('AuthInmemory'),
+        _privilegedEmails = privilegedEmails ??
+            const ['admin@example.com', 'publisher@example.com'] {
     _logger.fine(
       'Initializing with initialUser: $initialUser, '
-      'initialToken: $initialToken',
+      'initialToken: $initialToken, '
+      'privilegedEmails: $_privilegedEmails',
     );
     _currentUser = initialUser;
     _currentToken = initialToken;
@@ -48,6 +52,9 @@ class AuthInmemory implements AuthClient {
 
   /// The initial token to set for demonstration purposes.
   final String? initialToken;
+
+  /// The list of privileged emails that are allowed to access the dashboard.
+  final List<String> _privilegedEmails;
 
   final StreamController<User?> _authStateController =
       StreamController<User?>.broadcast();
