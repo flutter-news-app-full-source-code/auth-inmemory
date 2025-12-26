@@ -155,24 +155,12 @@ class AuthInmemory implements AuthClient {
     final user = User(
       id: _uuid.v4(),
       email: email,
-      appRole: isDashboardLogin
-          ? AppUserRole.premiumUser
-          : AppUserRole.standardUser,
-      dashboardRole: isDashboardLogin
-          ? (email == 'admin@example.com'
-                ? DashboardUserRole.admin
-                : DashboardUserRole.publisher)
-          : DashboardUserRole.none,
+      role: isDashboardLogin
+          ? (email == 'admin@example.com' ? UserRole.admin : UserRole.publisher)
+          : UserRole.user,
+      tier: isDashboardLogin ? AccessTier.premium : AccessTier.standard,
+      isAnonymous: false,
       createdAt: DateTime.now(),
-      feedDecoratorStatus:
-          Map<FeedDecoratorType, UserFeedDecoratorStatus>.fromEntries(
-            FeedDecoratorType.values.map(
-              (type) => MapEntry(
-                type,
-                const UserFeedDecoratorStatus(isCompleted: false),
-              ),
-            ),
-          ),
     );
     _currentUser = user;
     _currentToken = _uuid.v4();
@@ -195,18 +183,10 @@ class AuthInmemory implements AuthClient {
     final user = User(
       id: _uuid.v4(),
       email: 'anonymous@example.com',
-      appRole: AppUserRole.guestUser,
-      dashboardRole: DashboardUserRole.none,
+      role: UserRole.user,
+      tier: AccessTier.guest,
+      isAnonymous: true,
       createdAt: DateTime.now(),
-      feedDecoratorStatus:
-          Map<FeedDecoratorType, UserFeedDecoratorStatus>.fromEntries(
-            FeedDecoratorType.values.map(
-              (type) => MapEntry(
-                type,
-                const UserFeedDecoratorStatus(isCompleted: false),
-              ),
-            ),
-          ),
     );
     _currentUser = user;
     _currentToken = _uuid.v4();
