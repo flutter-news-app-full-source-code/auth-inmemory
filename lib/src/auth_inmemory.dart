@@ -159,7 +159,6 @@ class AuthInmemory implements AuthClient {
           ? (email == 'admin@example.com' ? UserRole.admin : UserRole.publisher)
           : UserRole.user,
       tier: isDashboardLogin ? AccessTier.premium : AccessTier.standard,
-      isAnonymous: false,
       createdAt: DateTime.now(),
     );
     _currentUser = user;
