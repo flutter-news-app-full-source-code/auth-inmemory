@@ -23,3 +23,9 @@ dev_dependencies:
   mocktail: ^1.0.4
   test: ^1.25.8
   very_good_analysis: ^9.0.0
+
+dependency_overrides:
+  core:
+    git:
+      url: https://github.com/flutter-news-app-full-source-code/core.git
+      ref: 3f251296985d7bbda8141671192312f917235ff6
